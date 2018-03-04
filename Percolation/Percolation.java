@@ -2,7 +2,10 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private boolean grid[][];
-    public WeightedQuickUnionUF connect;
+    //                        main tree   virtual tree
+    public WeightedQuickUnionUF connect, virtualConnect;
+    private int virtualTopSite;
+    private int virtualBottomSite;
     public int size = 0;
     // create n-by-n grid, with all sites blocked
     public Percolation(int n){
@@ -12,29 +15,50 @@ public class Percolation {
                 grid[i][j]=false; //blocked
             }
         }
-        size = grid.length;
-        connect = new WeightedQuickUnionUF(n*n);
+        size = n;
+        connect = new WeightedQuickUnionUF(n*n + 2);
+        virtualConnect = new WeightedQuickUnionUF(n*n + 1);//+2 for virtual sites (n*n)=top (n*n+1)=bottom
+        virtualTopSite = n*n;
+        virtualBottomSite = n*n + 1;
     }
     // open site (row, col) if it is not open already
     public void open(int row, int col){
+        if (row <= 0 || row > size)
+            throw new IndexOutOfBoundsException("row out of bound");
+        if (col<= 0 || col > size)
+            throw new IndexOutOfBoundsException("column out of bound");
         grid[row-1][col-1]=true;
 
-        if (row - 2 >= 0 && isOpen(row - 1, col)) { // up
-            connect.union((row - 2) * size+ col-1, (row-1) * size + col-1);
+        if (row - 2 >= 0 && isOpen(row - 1, col)) { // left
+            connect.union((row - 2) * size + col-1, (row-1) * size + col-1);
+            virtualConnect.union((row - 2) * size + col-1, (row-1) * size + col-1);
         }
 
-        if (row < size && isOpen(row+1, col)) { // down
+        if (row < size && isOpen(row+1, col)) { // righ
             connect.union((row-1) * size + col-1, (row) * size + col-1);
+            virtualConnect.union((row-1) * size + col-1, (row) * size + col-1);
         }
 
-        if (col - 2 >= 0 && isOpen(row, col - 1)) // left
+        if (col - 2 >= 0 && isOpen(row, col - 1)) // up
         {
             connect.union((row-1) * size  + col-1, (row-1) * size + col - 2);
+            virtualConnect.union((row-1) * size  + col-1, (row-1) * size + col - 2);
         }
 
-        if (col< size && isOpen(row, col+1)) // right
+        if (col< size && isOpen(row, col+1)) // down
         {
             connect.union((row-1) * size  + col-1, (row-1) * size + col);
+            virtualConnect.union((row-1) * size  + col-1, (row-1) * size + col);
+        }
+
+        if(row==1)//top row?
+        {
+            connect.union((row - 1) * size + col - 1, virtualTopSite);
+            virtualConnect.union((row - 1) * size + col - 1, virtualTopSite);
+        }
+        if(row==size)//bottom row?
+        {
+            connect.union((row - 1) * size + col - 1, virtualBottomSite);
         }
     }
 
@@ -42,13 +66,8 @@ public class Percolation {
 
     // is site (row, col) full?
     public boolean isFull(int row, int col){
-        if(isOpen(row,col))
-        {
-            for(int i = 0; i < size; i++)
-            {
-
-                if(connect.connected((row-1)*size+(col-1),i)) return true;
-            }
+        if(isOpen(row, col)){
+            return virtualConnect.connected(virtualTopSite, (row-1)*size + (col-1));
         }
         return false;
     }
@@ -64,26 +83,6 @@ public class Percolation {
     }
 
     public boolean percolates(){
-        for (int i = (size * (size - 1)); i < (size * size); i++) {
-            for (int j = 0; j < size; j++) {
-                if (connect.connected(i, j)) return true;
-            }
-        }
-        return false;
+        return connect.connected(virtualTopSite, virtualBottomSite);
     }
-
-    public static void main(String[] args) {
-        int ff[][]=new int[10][10];
-        System.out.println("sdaohasdigf" + ff.length);
-
-        WeightedQuickUnionUF s =new WeightedQuickUnionUF(25);
-
-        s.union(2,5);
-
-        Percolation qq =new Percolation(5);
-        qq.open(1,2);
-
-
-    }
-
 }
