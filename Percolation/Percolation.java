@@ -3,7 +3,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean grid[][];
     //                        main tree   virtual tree
-    public WeightedQuickUnionUF connect, virtualConnect;
+    public WeightedQuickUnionUF connect, isFullConnect;
     private int virtualTopSite;
     private int virtualBottomSite;
     public int size = 0;
@@ -17,7 +17,7 @@ public class Percolation {
         }
         size = n;
         connect = new WeightedQuickUnionUF(n*n + 2);
-        virtualConnect = new WeightedQuickUnionUF(n*n + 1);//+2 for virtual sites (n*n)=top (n*n+1)=bottom
+        isFullConnect = new WeightedQuickUnionUF(n*n + 1);//+2 for virtual sites (n*n)=top (n*n+1)=bottom
         virtualTopSite = n*n;
         virtualBottomSite = n*n + 1;
     }
@@ -31,30 +31,30 @@ public class Percolation {
 
         if (row - 2 >= 0 && isOpen(row - 1, col)) { // left
             connect.union((row - 2) * size + col-1, (row-1) * size + col-1);
-            virtualConnect.union((row - 2) * size + col-1, (row-1) * size + col-1);
+            isFullConnect.union((row - 2) * size + col-1, (row-1) * size + col-1);
         }
 
         if (row < size && isOpen(row+1, col)) { // righ
             connect.union((row-1) * size + col-1, (row) * size + col-1);
-            virtualConnect.union((row-1) * size + col-1, (row) * size + col-1);
+            isFullConnect.union((row-1) * size + col-1, (row) * size + col-1);
         }
 
         if (col - 2 >= 0 && isOpen(row, col - 1)) // up
         {
             connect.union((row-1) * size  + col-1, (row-1) * size + col - 2);
-            virtualConnect.union((row-1) * size  + col-1, (row-1) * size + col - 2);
+            isFullConnect.union((row-1) * size  + col-1, (row-1) * size + col - 2);
         }
 
         if (col< size && isOpen(row, col+1)) // down
         {
             connect.union((row-1) * size  + col-1, (row-1) * size + col);
-            virtualConnect.union((row-1) * size  + col-1, (row-1) * size + col);
+            isFullConnect.union((row-1) * size  + col-1, (row-1) * size + col);
         }
 
         if(row==1)//top row?
         {
             connect.union((row - 1) * size + col - 1, virtualTopSite);
-            virtualConnect.union((row - 1) * size + col - 1, virtualTopSite);
+            isFullConnect.union((row - 1) * size + col - 1, virtualTopSite);
         }
         if(row==size)//bottom row?
         {
@@ -67,14 +67,14 @@ public class Percolation {
     // is site (row, col) full?
     public boolean isFull(int row, int col){
         if(isOpen(row, col)){
-            return virtualConnect.connected(virtualTopSite, (row-1)*size + (col-1));
+            return isFullConnect.connected(virtualTopSite, (row-1)*size + (col-1));
         }
         return false;
     }
     public int numberOfOpenSites(){
         int cnt=0;
-        for(int i=0; i<size;i++){
-            for(int j=0; j<size; j++){
+        for(int i=1; i<=size;i++){
+            for(int j=1; j<=size; j++){
                 if (isOpen(i,j))
                     cnt++;
             }
