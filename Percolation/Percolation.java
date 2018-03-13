@@ -3,38 +3,38 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean grid[][];
     //                        main tree   virtual tree
-    public WeightedQuickUnionUF connect, isFullConnect;
-    private int virtualTopSite;
-    private int virtualBottomSite;
-    public int size = 0;
+    private final WeightedQuickUnionUF connect, isFullConnect;
+    private final int virtualTopSite;
+    private final int virtualBottomSite;
+    private final int size;
     // create n-by-n grid, with all sites blocked
     public Percolation(int n){
         grid= new boolean[n][n];
-        for(int i=0; i<n;i++){
+        for(int i = 0;i < n;i++){
             for(int j=0; j<n; j++){
                 grid[i][j]=false; //blocked
             }
         }
         size = n;
         connect = new WeightedQuickUnionUF(n*n + 2);
-        isFullConnect = new WeightedQuickUnionUF(n*n + 1);//+2 for virtual sites (n*n)=top (n*n+1)=bottom
+        isFullConnect = new WeightedQuickUnionUF(n*n + 1);//    +2 for virtual sites (n*n)=top (n*n+1)=bottom
         virtualTopSite = n*n;
         virtualBottomSite = n*n + 1;
     }
-    // open site (row, col) if it is not open already
+    //  open site (row, col) if it is not open already
     public void open(int row, int col){
         if (row <= 0 || row > size)
-            throw new IndexOutOfBoundsException("row out of bound");
+            throw new IllegalArgumentException("row out of bound");
         if (col<= 0 || col > size)
-            throw new IndexOutOfBoundsException("column out of bound");
+            throw new IllegalArgumentException("column out of bound");
         grid[row-1][col-1]=true;
 
-        if (row - 2 >= 0 && isOpen(row - 1, col)) { // left
+        if (row - 2 >= 0 && isOpen(row - 1, col)) { //  left
             connect.union((row - 2) * size + col-1, (row-1) * size + col-1);
             isFullConnect.union((row - 2) * size + col-1, (row-1) * size + col-1);
         }
 
-        if (row < size && isOpen(row+1, col)) { // righ
+        if (row < size && isOpen(row+1, col)) { //  righ
             connect.union((row-1) * size + col-1, (row) * size + col-1);
             isFullConnect.union((row-1) * size + col-1, (row) * size + col-1);
         }
@@ -51,30 +51,41 @@ public class Percolation {
             isFullConnect.union((row-1) * size  + col-1, (row-1) * size + col);
         }
 
-        if(row==1)//top row?
+        if(row == 1)  //top row?
         {
             connect.union((row - 1) * size + col - 1, virtualTopSite);
             isFullConnect.union((row - 1) * size + col - 1, virtualTopSite);
         }
-        if(row==size)//bottom row?
+        if(row == size)//bottom row?
         {
             connect.union((row - 1) * size + col - 1, virtualBottomSite);
         }
     }
 
-    public boolean isOpen(int row, int col){return grid[row-1][col-1];}  // is site (row, col) open?
+    public boolean isOpen(int row, int col){    // is site (row, col) open?
+        if (row <= 0 || row > size)
+            throw new IllegalArgumentException("row out of bound");
+        if (col<= 0 || col > size)
+            throw new IllegalArgumentException("column out of bound");
+        return grid[row-1][col-1];
+    }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col){
+        if (row <= 0 || row > size)
+            throw new IllegalArgumentException("row out of bound");
+        if (col<= 0 || col > size)
+            throw new IllegalArgumentException("column out of bound");
+
         if(isOpen(row, col)){
             return isFullConnect.connected(virtualTopSite, (row-1)*size + (col-1));
         }
         return false;
     }
     public int numberOfOpenSites(){
-        int cnt=0;
-        for(int i=1; i<=size;i++){
-            for(int j=1; j<=size; j++){
+        int cnt = 0;
+        for(int i = 1;i <= size;i++){
+            for(int j = 1;j <= size;j++){
                 if (isOpen(i,j))
                     cnt++;
             }

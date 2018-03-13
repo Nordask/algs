@@ -3,10 +3,10 @@ import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.Stopwatch;
 
 public class PercolationStats {
-    private double mean;    // sample mean of percolation threshold
-    private double stddev;  // sample standard deviation of percolation threshold
-    private double confidenceLo;    // low  endpoint of 95% confidence interval
-    private double confidenceHi;    // high endpoint of 95% confidence interval
+    private final double mean;    // sample mean of percolation threshold
+    private final double stddev;  // sample standard deviation of percolation threshold
+    private final double confidenceLo;    // low  endpoint of 95% confidence interval
+    private final double confidenceHi;    // high endpoint of 95% confidence interval
     public PercolationStats(int n, int trials){
         if(n <= 0){
             throw new IllegalArgumentException("Grid size must be more then 0");
