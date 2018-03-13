@@ -46,9 +46,11 @@ public class UFWithLargest {
         lg.union(2,6);
         lg.union(33,58);
         lg.union(69,58);
-        lg.union(33,99);
+        lg.union(99,1);
+        lg.union(37,69);
 
-        System.out.println(lg.findLargest(2));
+        System.out.println(lg.find(37));
+        System.out.println(lg.findLargest(37));
     }
 }
 
