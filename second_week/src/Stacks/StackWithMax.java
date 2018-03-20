@@ -1,4 +1,5 @@
 package Stacks;
+import StacksAndQueues.FirstImplementation.Stack;
 
 public class StackWithMax {
 
