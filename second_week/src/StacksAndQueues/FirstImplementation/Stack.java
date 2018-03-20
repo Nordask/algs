@@ -1,21 +1,21 @@
-package StacksAndQueues;
+package StacksAndQueues.FirstImplementation;
 
-public class Stack {
+public class Stack <Item>{
     private Node node;
     private class Node{
-        String item;
+        Item item;
         Node next;
     }
 
-    public void push(String item) {
+    public void push(Item item) {
         Node oldfirst = node;
         node = new Node();
         node.item = item;
         node.next = oldfirst;
     }
 
-    public String pop() {
-        String item = node.item;
+    public Item pop() {
+        Item item = node.item;
         node = node.next;
         return item;
     }

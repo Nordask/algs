@@ -1,11 +1,10 @@
-package StacksAndQueues;
+package StacksAndQueues.FirstImplementation;
 
-public class QueueWithTwoStacks {
+public class QueueWithTwoStacks <Item>{
+    private Stack<Item> originalStack = new Stack();
+    private Stack<Item> additionalStack = new Stack();
 
-    private Stack originalStack = new Stack();
-    private Stack additionalStack = new Stack();
-
-    public void enqueue(String item) {
+    public void enqueue(Item item) {
         originalStack.push(item);
     }
 
@@ -13,20 +12,19 @@ public class QueueWithTwoStacks {
         return originalStack.isEmpty() && additionalStack.isEmpty();
     }
 
-    public String dequeue() {
+    public Item dequeue() {
         if(originalStack.isEmpty() && additionalStack.isEmpty()){
             System.out.print("All stacks are empty");
             System.exit(0);
         }
-        if(additionalStack.isEmpty()) {
-            while (!originalStack.isEmpty()) {
+        if(additionalStack.isEmpty()) {//   push to additionalStack only when it's empty
+            while (!originalStack.isEmpty()) {// push to additionalStack from originalStack
                 additionalStack.push(originalStack.pop());
             }
         }
 
         return additionalStack.pop();
     }
-
 
     public static void main(String args[]) {
         Stack test = new Stack();
@@ -45,6 +43,7 @@ public class QueueWithTwoStacks {
             System.out.print(test.pop());
         }
 
+        System.out.println();
         System.out.println("//----------------------------------");
         for (String x : items) {
             System.out.print(x);
@@ -57,13 +56,14 @@ public class QueueWithTwoStacks {
             System.out.print(q_test.dequeue());
         }while (!q_test.isEmpty());
 
-        System.out.println("//--------------");
-        q_test.enqueue("3");
-        q_test.enqueue("44");
-        q_test.enqueue("77");
+        System.out.println();
+        System.out.println("//-----------------------------------");
+        q_test.enqueue(3);
+        q_test.enqueue(44);
+        q_test.enqueue(77);
 
         System.out.println(q_test.dequeue());
-        q_test.enqueue("133");
+        q_test.enqueue(133);
         System.out.println(q_test.dequeue());
         System.out.println(q_test.dequeue());
         System.out.println(q_test.dequeue());
