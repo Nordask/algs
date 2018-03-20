@@ -1,53 +1,35 @@
 package StacksAndQueues;
+
 public class QueueWithTwoStacks {
 
-    private Node originalStack, additionalStack;
-
-    private class Node{
-        String item;
-        Node next;
-    }
-
-    public boolean isEmptyOriginal() { return originalStack == null; }
-    public boolean isEmptyAdditional() { return additionalStack == null; }
-
-    public void push(String item) {
-        Node oldfirst = originalStack;
-        originalStack = new Node();
-        originalStack.item = item;
-        originalStack.next = oldfirst;
-    }
-    public String pop() {
-        String item = originalStack.item;
-        originalStack = originalStack.next;
-        return item;
-    }
+    private Stack originalStack = new Stack();
+    private Stack additionalStack = new Stack();
 
     public void enqueue(String item) {
-        push(item);
+        originalStack.push(item);
+    }
+
+    public boolean isEmpty(){
+        return originalStack.isEmpty() && additionalStack.isEmpty();
     }
 
     public String dequeue() {
-        if(isEmptyOriginal() && isEmptyAdditional()){
+        if(originalStack.isEmpty() && additionalStack.isEmpty()){
             System.out.print("All stacks are empty");
             System.exit(0);
         }
-
-        while(isEmptyAdditional()){
-            Node oldfirst = additionalStack;
-            additionalStack = new Node();
-            additionalStack.item = pop();
-            additionalStack.next = oldfirst;
+        if(additionalStack.isEmpty()) {
+            while (!originalStack.isEmpty()) {
+                additionalStack.push(originalStack.pop());
+            }
         }
 
-        String item = additionalStack.item;
-        additionalStack = additionalStack.next;
-        return item;
+        return additionalStack.pop();
     }
 
 
     public static void main(String args[]) {
-        QueueWithTwoStacks test = new QueueWithTwoStacks();
+        Stack test = new Stack();
         QueueWithTwoStacks q_test = new QueueWithTwoStacks();
 
         String items[] = {"1", "2", "3", "4", "5", "6", "7"};
@@ -59,7 +41,7 @@ public class QueueWithTwoStacks {
 
         System.out.println();
 
-        while (!test.isEmptyOriginal()) {
+        while (!test.isEmpty()) {
             System.out.print(test.pop());
         }
 
@@ -73,7 +55,7 @@ public class QueueWithTwoStacks {
 
         do {
             System.out.print(q_test.dequeue());
-        }while (!q_test.isEmptyAdditional());
+        }while (!q_test.isEmpty());
 
         System.out.println("//--------------");
         q_test.enqueue("3");
