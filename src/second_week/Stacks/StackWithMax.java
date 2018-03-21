@@ -1,5 +1,5 @@
 package second_week.Stacks;
-import StacksAndQueues.FirstImplementation.Stack;
+import second_week.StacksAndQueues.FirstImplementation.Stack;
 
 public class StackWithMax {
 
