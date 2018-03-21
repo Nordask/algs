@@ -1,3 +1,5 @@
+package first_week.QuickUnion;
+
 import edu.princeton.cs.algs4.QuickUnionUF;
 
 import java.io.BufferedReader;

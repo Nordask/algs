@@ -1,3 +1,5 @@
+package first_week.AnalysisOfAlgorithms;
+
 import edu.princeton.cs.algs4.Stopwatch;
 
 import java.util.Calendar;

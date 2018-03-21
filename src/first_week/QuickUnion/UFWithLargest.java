@@ -1,3 +1,5 @@
+package first_week.QuickUnion;
+
 public class UFWithLargest {
     private int[] parent;  // parent[i] = parent of i
     private int count;     // number of components
