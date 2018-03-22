@@ -6,13 +6,13 @@ import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
 
-    private LinkedList<Item> doubleEndedQ;
+    final private LinkedList<Item> doubleEndedQ;
 
-    public Deque(){ // construct an empty deque
+    public Deque() { // construct an empty deque
         doubleEndedQ = new LinkedList<Item>();
     }
 
-    public boolean isEmpty(){// is the deque empty?
+    public boolean isEmpty() {// is the deque empty?
         return doubleEndedQ.isEmpty();
     }
 
@@ -20,7 +20,7 @@ public class Deque<Item> implements Iterable<Item> {
         return  doubleEndedQ.size();
     }
 
-    public void addFirst(Item item){// add the item to the front
+    public void addFirst(Item item) {// add the item to the front
         if(item == null){
                 throw new IllegalArgumentException("Null argument");
         }
@@ -28,7 +28,7 @@ public class Deque<Item> implements Iterable<Item> {
         doubleEndedQ.addFirst(item);
     }
 
-    public void addLast(Item item){// add the item to the end
+    public void addLast(Item item) {// add the item to the end
         if(item == null){
                 throw new IllegalArgumentException("Null argument");
         }
@@ -36,7 +36,7 @@ public class Deque<Item> implements Iterable<Item> {
         doubleEndedQ.addLast(item);
     }
 
-    public Item removeFirst(){// remove and return the item from the front
+    public Item removeFirst() {// remove and return the item from the front
         if(isEmpty()){
             throw new NoSuchElementException("Queue is empty");
         }
@@ -44,7 +44,7 @@ public class Deque<Item> implements Iterable<Item> {
         return doubleEndedQ.removeFirst();
     }
 
-    public Item removeLast(){// remove and return the item from the end
+    public Item removeLast() {// remove and return the item from the end
         if(isEmpty()){
             throw new NoSuchElementException("Queue is empty");
         }
@@ -52,7 +52,7 @@ public class Deque<Item> implements Iterable<Item> {
         return  doubleEndedQ.removeLast();
     }
 
-    private class DequeIterator implements Iterator<Item>{
+    private class DequeIterator implements Iterator<Item> {
         int N = size();
         @Override
         public boolean hasNext() {
@@ -62,7 +62,7 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
-            if(isEmpty()){
+            if(isEmpty()) {
                 throw new NoSuchElementException("Queue is empty");
             }
             N = size();
@@ -75,29 +75,29 @@ public class Deque<Item> implements Iterable<Item> {
         }
     }
 
-    public Iterator<Item> iterator(){// return an iterator over items in order from front to end
+    public Iterator<Item> iterator() {// return an iterator over items in order from front to end
         return new DequeIterator();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Deque<Character> charDEQ = new Deque<Character>();
         Deque<Integer> intDEQ = new Deque<Integer>();
 
         String strTest = "EatMeDrinkMe";
 
-        for(Character x:strTest.toCharArray()){
+        for(Character x:strTest.toCharArray()) {
             System.out.print(x);
             charDEQ.addFirst(x);
         }
         System.out.println();
-        while(!charDEQ.isEmpty()){
+        while(!charDEQ.isEmpty()) {
             System.out.print(charDEQ.removeLast());
         }
 
         System.out.println();
         System.out.println("//------------------------------");
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 10; i++) {
             System.out.print(i);
             if(i == 0 || i%2 == 0)
                 intDEQ.addLast(i);
@@ -107,7 +107,7 @@ public class Deque<Item> implements Iterable<Item> {
         System.out.println();
         Iterator<Integer> IteratorIntDeq = intDEQ.iterator();
 
-        while(IteratorIntDeq.hasNext()){
+        while(IteratorIntDeq.hasNext()) {
             System.out.println(IteratorIntDeq.next());
         }
     }
