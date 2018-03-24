@@ -1,42 +1,65 @@
 package second_week.DequesandRandomizedQueues;
 
 import edu.princeton.cs.algs4.StdRandom;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-    final private ArrayList<Item> randQeueu;
+    private Item []randQeueu;
+    private final int minArraySize = 2;
+    private int queueSize = 0;
 
     public RandomizedQueue() {// construct an empty randomized queue
-        randQeueu = new ArrayList<Item>();
+        randQeueu = (Item[]) new Object[minArraySize];
     }
+
     public boolean isEmpty() {// is the randomized queue empty?
-        return randQeueu.isEmpty();
+        return queueSize == 0;
     }
+
     public int size() {// return the number of items on the randomized queue
-        return randQeueu.size();
+        return queueSize;
     }
+
+    private void resize(int size)
+    {
+        Item[] copy = (Item[]) new Object[size];
+        for (int i = 0; i < queueSize; i++)
+            copy[i] = randQeueu[i];
+        randQeueu = copy;
+    }
+
     public void enqueue(Item item) {// add the item
         if(item == null) {
             throw new IllegalArgumentException("Null argument");
         }
 
-        randQeueu.add(item);
+        if(queueSize == randQeueu.length){
+            resize(queueSize*2);
+        }
+
+        randQeueu[queueSize++] = item;
     }
     public Item dequeue() {// remove and return a random item
         if(isEmpty()) {
             throw new NoSuchElementException("Queue is empty");
         }
+        int rand = queueSize > 1 ? StdRandom.uniform(0, queueSize - 1) : 0;
+        if(rand != queueSize - 1){
+            Item item = randQeueu[rand];
+            randQeueu[rand] = randQeueu[queueSize - 1];
+            queueSize--;
+            return item;
+        }
 
-        return randQeueu.remove(StdRandom.uniform(0, size()));
+        return randQeueu[--queueSize];
     }
     public Item sample() {// return a random item (but do not remove it)
         if(isEmpty()) {
             throw new NoSuchElementException("Queue is empty");
         }
 
-        return randQeueu.get(StdRandom.uniform(0, size()));
+        return queueSize > 1 ? randQeueu[(StdRandom.uniform(0, queueSize))]: randQeueu[0];
     }
 
     private class RandomizeIterator implements Iterator<Item> {

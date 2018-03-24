@@ -1,31 +1,62 @@
 package second_week.DequesandRandomizedQueues;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
+    final private DoubleEndedStack<Item> firstItem; // virtual first
+    final private DoubleEndedStack<Item> lastItem;  // virtual last
+    private int size = 0;
 
-    final private LinkedList<Item> doubleEndedQ;
+    private class DoubleEndedStack<Item>{
+        Item item;
+        private DoubleEndedStack prev;
+        private DoubleEndedStack next;
+
+        DoubleEndedStack(Item item, DoubleEndedStack<Item> prev, DoubleEndedStack<Item> next){
+            this.item = item;
+            this.prev = prev;
+            this.next = next;
+        }
+    }
 
     public Deque() { // construct an empty deque
-        doubleEndedQ = new LinkedList<Item>();
+        firstItem = new DoubleEndedStack<Item>(null, null, null);
+        lastItem = new DoubleEndedStack<Item>(null, null, null);
+        firstItem.next = lastItem;
+        lastItem.prev = firstItem;
     }
 
     public boolean isEmpty() {// is the deque empty?
-        return doubleEndedQ.isEmpty();
+        return size == 0;
     }
 
     public int size(){// return the number of items on the deque
-        return  doubleEndedQ.size();
+        return size;
     }
 
     public void addFirst(Item item) {// add the item to the front
-        if(item == null){
+        if(item == null) {
                 throw new IllegalArgumentException("Null argument");
         }
 
-        doubleEndedQ.addFirst(item);
+        if(isEmpty()){
+            // create first real element
+            final DoubleEndedStack<Item> newFirstItem = new DoubleEndedStack<Item>(item, firstItem, lastItem);
+            firstItem.next = newFirstItem;
+            lastItem.prev = newFirstItem;
+            size++;
+        }
+        else{
+            //  creat Object for old FirstElement
+            final DoubleEndedStack<Item> newFirstItem = new DoubleEndedStack<Item>(item, firstItem, firstItem.next);
+            // new parameters for old first element
+            firstItem.next.prev = newFirstItem;
+            //  change point for firstItem.next
+            firstItem.next = newFirstItem;
+
+            size++;
+        }
     }
 
     public void addLast(Item item) {// add the item to the end
@@ -33,7 +64,22 @@ public class Deque<Item> implements Iterable<Item> {
                 throw new IllegalArgumentException("Null argument");
         }
 
-        doubleEndedQ.addLast(item);
+        if(isEmpty()){
+            // create last real element
+            final DoubleEndedStack<Item> newLastItem = new DoubleEndedStack<>(item, firstItem, lastItem);
+            firstItem.next = newLastItem;
+            lastItem.prev = newLastItem;
+            size++;
+        }else{
+            //  creat Object for old LastElement
+            final DoubleEndedStack<Item> newLastItem = new DoubleEndedStack<>(item, lastItem.prev, lastItem);
+            // new parameters for old last element
+            lastItem.prev.next = newLastItem;
+            //  change point for lastItem.next
+            lastItem.prev = newLastItem;
+
+            size++;
+        }
     }
 
     public Item removeFirst() {// remove and return the item from the front
@@ -41,7 +87,17 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException("Queue is empty");
         }
 
-        return doubleEndedQ.removeFirst();
+        DoubleEndedStack<Item> currentFirstItem = firstItem.next;
+        Item mustSave = currentFirstItem.item;
+        //  closure
+        firstItem.next = currentFirstItem.next;
+        firstItem.next.prev = firstItem;
+
+        //  remove element
+        currentFirstItem = null;
+        size--;
+
+        return mustSave;
     }
 
     public Item removeLast() {// remove and return the item from the end
@@ -49,9 +105,22 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException("Queue is empty");
         }
 
-        return  doubleEndedQ.removeLast();
+        DoubleEndedStack<Item> currentLastItem = lastItem.prev;
+        Item mustSave = currentLastItem.item;
+        //  closure
+        lastItem.prev = currentLastItem.prev;
+        lastItem.prev.next = lastItem;
+
+        //  remove element
+        currentLastItem = null;
+        size--;
+
+        return mustSave;
     }
 
+    private void swap (DoubleEndedStack<Item> oldElement, DoubleEndedStack<Item> newElement){
+
+    }
     private class DequeIterator implements Iterator<Item> {
         int N = size();
         @Override
@@ -91,7 +160,7 @@ public class Deque<Item> implements Iterable<Item> {
         }
         System.out.println();
         while(!charDEQ.isEmpty()) {
-            System.out.print(charDEQ.removeLast());
+            System.out.print(charDEQ.removeFirst());
         }
 
         System.out.println();
