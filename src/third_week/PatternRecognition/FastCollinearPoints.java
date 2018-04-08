@@ -3,45 +3,59 @@ package third_week.PatternRecognition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class FastCollinearPoints {
 
-    LineSegment[] segments;
+    final private LineSegment[] segments;
 
     public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
+        if(points == null)
+            throw new NullPointerException("Point array doesn't exist");
+        if(hasNullPoint(points))
+            throw new IllegalArgumentException("Point array has empty element");
+        if(hasDuplicate(points))
+            throw new IllegalArgumentException("Point array has duplicated values");
+
         Point[] copyOfPoints = Arrays.copyOf(points, points.length);
         Arrays.sort(copyOfPoints);
 
-        Point[] auxPoints = new Point[points.length];
         ArrayList<LineSegment> listOfSegments = new ArrayList<>();
 
-        for(Point x: copyOfPoints) {
-            sort(copyOfPoints, auxPoints, 0, points.length - 1, x.slopeOrder());
-            List<Point> slopePoints = new ArrayList<>();
+        for(int i = 0;i < copyOfPoints.length - 3;i++) {
+            Arrays.sort(copyOfPoints);
+            Point[] auxPoints = new Point[copyOfPoints.length];
+            sort(copyOfPoints, auxPoints, 0, copyOfPoints.length - 1, copyOfPoints[i].slopeOrder());
 
-            double slope = 0;
-            double matchSlope = Double.NEGATIVE_INFINITY;
-
-            for(int j = 1;j < points.length - 1;j++) {
-                slope = x.slopeTo(copyOfPoints[j]);
-                if (slope == matchSlope) {
-                    slopePoints.add(copyOfPoints[j]);
+            int first = 1, last = 2;
+            for(;last < copyOfPoints.length;last++) {
+                while(last < copyOfPoints.length &&
+                        copyOfPoints[0].slopeTo(copyOfPoints[first]) == copyOfPoints[0].slopeTo(copyOfPoints[last])) {
+                    last ++;
                 }
-                else {
-                    if(slopePoints.size() >= 3) {
-                        listOfSegments.add(new LineSegment(x, copyOfPoints[j + 1]));
-                    }
+                if (last - first >= 3 && copyOfPoints[0].compareTo(copyOfPoints[first]) < 0) {
+                    listOfSegments.add(new LineSegment(copyOfPoints[0], copyOfPoints[last - 1]));
                 }
-                //else if (x.slopeTo(copyOfPoints[j]) == x.slopeTo(copyOfPoints[j + 1])) {
-                //    listOfSegments.add(new LineSegment(x, copyOfPoints[j]));
-                //    listOfSegments.add(new LineSegment(x, copyOfPoints[j + 1]));
+                first = last;
             }
         }
         segments = listOfSegments.toArray(new LineSegment[listOfSegments.size()]);
     }
 
+    private boolean hasDuplicate(Point[] points) {
+        for(int i = 0;i < points.length - 1;i++) {
+            if(points[i].compareTo(points[i + 1]) == 0)
+                return true;
+        }
+        return false;
+    }
 
+    private boolean hasNullPoint(Point[] points) {
+        for(int i = 0;i < points.length;i++) {
+            if(points[i] == null)
+                return true;
+        }
+        return false;
+    }
 
     private static void merge(Point[] a, Point[] aux, int lo, int mid, int hi, Comparator<Point>comparator)
     {
@@ -66,7 +80,6 @@ public class FastCollinearPoints {
 
     private static void sort(Point[] a, Point[] aux, int lo, int hi, Comparator<Point>comparator)
     {
-        int insertionCounter = 0;
         if (hi <= lo) return;
 
         int mid = lo + (hi - lo) / 2;
@@ -75,7 +88,7 @@ public class FastCollinearPoints {
         merge(a, aux, lo, mid, hi, comparator);
     }
 
-    public static boolean less(Comparator<Point>comparator, Point first, Point second) {
+    private static boolean less(Comparator<Point>comparator, Point first, Point second) {
         return comparator.compare(first, second) < 0;
     }
 
@@ -83,6 +96,6 @@ public class FastCollinearPoints {
         return segments.length;
     }
     public LineSegment[] segments() {
-        return segments;
+        return segments.clone();
     }
 }

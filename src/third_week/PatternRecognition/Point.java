@@ -2,10 +2,6 @@ package third_week.PatternRecognition;
 
 import edu.princeton.cs.algs4.StdDraw;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
@@ -37,12 +33,12 @@ public class Point implements Comparable<Point> {
     }
 
     public double slopeTo(Point that) { // the slope between this point and that point
-        if((this.y - that.y <= 0) && (this.x - that.x == 0)) {
-            return Double.NEGATIVE_INFINITY; // -1.0 / 0.0
-        } else if (this.x - that.x == 0) {
+        if((that.y - this.y == 0) && (that.x - this.x == 0)) {
+                return Double.NEGATIVE_INFINITY; // -1.0 / 0.0
+        } else if (that.x - this.x == 0) {
             return Double.POSITIVE_INFINITY; // 1.0 / 0.0
         }
-        return (this.y - that.y) / (this.x - that.x);
+        return (that.y - this.y) / (double)(that.x - this.x);
     }
 
     public Comparator<Point> slopeOrder() {
@@ -58,67 +54,5 @@ public class Point implements Comparable<Point> {
                     return 0;
             }
         };
-    }
-
-    public static void main(String[] args) {
-        String filename = args[0];
-          String readedFromFile = "";
-          try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line;
-
-            StringBuilder sb = new StringBuilder();
-            do {
-                line = br.readLine();
-                if(line == null)
-                    break;
-                sb.append(line);
-            } while(true);
-
-            readedFromFile = sb.toString();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //System.out.println(readedFromFile);
-        String [] splittedReadedFromFile = readedFromFile.trim().split("\\s* \\s*");
-
-        Integer[] arrayX = new Integer[splittedReadedFromFile.length/2];
-        Integer[] arrayY = new Integer[splittedReadedFromFile.length/2];
-
-        int xi = 0;
-        int yi = 0;
-        for(int i = 0;i < splittedReadedFromFile.length; i++) {
-            if(i%2 == 0) {
-                arrayY[yi++] = Integer.parseInt(splittedReadedFromFile[i]);
-            }
-            else {
-                arrayX[xi++] = Integer.parseInt(splittedReadedFromFile[i]);
-            }
-        }
-/*
-        for(Integer x: arrayX) {
-            System.out.print(x);
-        }
-
-        System.out.println();
-
-        for(Integer x: arrayY) {
-            System.out.print(x);
-        }
-*/
-        /*
-        int n = 1000;//splittedReadedFromFile.length;
-        StdDraw.clear();
-        StdDraw.setPenColor(StdDraw.WHITE);
-        StdDraw.setXscale(-0.05*n, 1.05*n);
-        StdDraw.setYscale(-0.05*n, 1.05*n);   // leave a border to write text
-
-        StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
-        //StdDraw
-        StdDraw.point(arrayX[0], arrayY[0]);
-        */
     }
 }
